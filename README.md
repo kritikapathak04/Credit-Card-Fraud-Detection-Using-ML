@@ -178,8 +178,7 @@ contains the full pipeline plus the tuned threshold.
 ## 🙏 Acknowledgements
 
 - Dataset: Worldline and the [ULB Machine Learning Group](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud).
-- Inspiration: [ashish-kharde1/credit-card-fraud-detection](https://github.com/ashish-kharde1/credit-card-fraud-detection)
-  and [mohammadhashim135/Credit-Card-Fraud-Detection](https://github.com/mohammadhashim135/Credit-Card-Fraud-Detection).
+
   This codebase was written independently.
 
 ## 📜 License
