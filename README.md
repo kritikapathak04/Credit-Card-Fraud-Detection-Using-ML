@@ -179,8 +179,6 @@ contains the full pipeline plus the tuned threshold.
 
 - Dataset: Worldline and the [ULB Machine Learning Group](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud).
 
-  This codebase was written independently.
-
 ## 📜 License
 
 Released under the MIT License (see `LICENSE`). For educational use.
