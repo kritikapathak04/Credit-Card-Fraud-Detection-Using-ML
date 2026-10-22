@@ -4,11 +4,6 @@ Final-year (Semester 7) capstone project. An end-to-end ML system that detects f
 transactions: data cleaning → feature engineering → imbalance-aware training of 4 models → threshold tuning →
 evaluation → interactive Streamlit dashboard (single check + CSV batch scoring).
 
-Inspired by the open-source projects
-[ashish-kharde1/credit-card-fraud-detection](https://github.com/ashish-kharde1/credit-card-fraud-detection) and
-[mohammadhashim135/Credit-Card-Fraud-Detection](https://github.com/mohammadhashim135/Credit-Card-Fraud-Detection),
-rebuilt as an original codebase with a proper evaluation methodology.
-
 ## Dataset
 [Kaggle - Credit Card Fraud Detection (ULB Machine Learning Group)](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud):
 284,807 transactions by European cardholders over two days, only 492 (0.172%) fraudulent.
