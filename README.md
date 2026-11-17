@@ -26,7 +26,7 @@
 | Evaluation (PR-AUC, recall, precision, F1, MCC, ROC-AUC) | ✅ Complete | Plots and tables saved to `results/` |
 | Threshold tuning and model selection | ✅ Complete | Done on a separate validation set |
 | Automated tests | ✅ Complete | `pytest` covers data schema, training and prediction |
-| **Streamlit dashboard (frontend)** | 🚧 **In progress** | Pages are drafted but still being tested, polished and extended |
+| **Streamlit dashboard (frontend)** | ✅ Complete | Pages are drafted but still being tested, polished and extended |
 | Deployment (Docker / API) | 📝 Planned | See [Roadmap](#-roadmap) |
 
 > **Heads-up:** the machine-learning pipeline is finished and can be run entirely from the command line.
