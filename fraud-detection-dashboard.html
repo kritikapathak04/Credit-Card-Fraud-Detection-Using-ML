@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Credit Card Fraud Detection by ML: Dashboard</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#14181f;--mut:#5d6675;--bd:#e1e5ea;--ac:#2f5bea;--ok:#12805c;--bad:#c4302b;--warn:#b7791f;--bar:#dfe6fb;--code:#eef1f6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8ebf0;--mut:#9aa3b2;--bd:#2a303c;--ac:#7b9bff;--ok:#3ec79a;--bad:#ff6b66;--warn:#e8b04a;--bar:#28324f;--code:#10141b}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:26px 20px 6px;max-width:1040px;margin:auto}
+h1{margin:0 0 4px;font-size:24px}header p{margin:2px 0;color:var(--mut);font-size:14px}
+.badge{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;background:var(--bar);font-size:12px;font-weight:600}
+nav{display:flex;gap:6px;max-width:1040px;margin:14px auto 0;padding:0 20px;overflow-x:auto}
+nav button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;white-space:nowrap}
+nav button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+main{max-width:1040px;margin:auto;padding:18px 20px 40px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 10px;font-size:17px}.card h3{margin:14px 0 6px;font-size:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.g2{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.stat b{display:block;font-size:24px}.stat span{color:var(--mut);font-size:13px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+th:first-child,td:first-child,.l{text-align:left}td.w{white-space:normal;text-align:left}
+tr.sel td{font-weight:600;background:var(--bar)}
+.row{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:14px}
+.row i{flex:0 0 78px;font-style:normal;color:var(--mut)}.row div{flex:1;background:var(--bar);border-radius:6px;height:14px}
+.row div u{display:block;height:100%;background:var(--ac);border-radius:6px}.row em{flex:0 0 62px;font-style:normal;text-align:right}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;max-width:420px;text-align:center}
+.cm div{padding:14px 8px;border-radius:8px;background:var(--bar)}.cm .h{background:none;color:var(--mut);font-size:12px;padding:4px}
+.cm .g b{color:var(--ok)}.cm .r b{color:var(--bad)}.cm b{display:block;font-size:22px}
+form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+label{display:block;font-size:13px;color:var(--mut)}
+input[type=number],textarea{width:100%;margin-top:3px;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.btn{border:0;background:var(--ac);color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font:inherit}
+.btn.alt{background:var(--bar);color:var(--tx)}.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.res{margin-top:16px;padding:16px;border-radius:10px;border:1px solid var(--bd);display:none}
+.res.on{display:block}.res h3{margin:0 0 4px;font-size:17px}.meter{height:12px;background:var(--bar);border-radius:6px;margin:10px 0;position:relative}
+.meter u{display:block;height:100%;border-radius:6px}.meter s{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--tx)}
+.note{font-size:13px;color:var(--mut);border-left:3px solid var(--warn);padding:6px 12px;margin:12px 0}
+.tag{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;color:#fff}.hi,.pbad{background:var(--bad)}.me,.pprog{background:var(--warn)}.lo,.pdone{background:var(--ok)}.pplan{background:var(--mut)}
+.drop{border:2px dashed var(--bd);border-radius:10px;padding:18px;text-align:center;color:var(--mut)}
+pre{background:var(--code);border-radius:8px;padding:12px;overflow-x:auto;font-size:13px;margin:8px 0}code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+.layers{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.layer{border:2px solid var(--bd);border-radius:10px;padding:12px;font-size:13px}.layer h4{margin:0 0 6px;font-size:13px;letter-spacing:.04em}
+.layer p{margin:5px 0;padding:6px 8px;background:var(--bar);border-radius:6px}.layer small{color:var(--mut)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}.steps li{counter-increment:s;display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px}
+.steps li:before{content:counter(s);flex:0 0 24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;text-align:center;font-size:12px;line-height:24px}
+.vb{display:flex;align-items:flex-end;gap:3px;height:150px;margin-top:8px}.vb>div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.vb .p{display:flex;align-items:flex-end;gap:1px;width:100%;flex:1;justify-content:center}.vb .p u{display:block;flex:1;max-width:14px;border-radius:2px 2px 0 0;min-height:1px}
+.vb small{font-size:10px;color:var(--mut);margin-top:3px;white-space:nowrap}
+.prog{height:8px;background:var(--bar);border-radius:4px;overflow:hidden;margin-top:10px}.prog u{display:block;height:100%;width:0;background:var(--ac)}
+.leg{font-size:12px;color:var(--mut);margin-top:6px}.leg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+ul.t{margin:6px 0;padding-left:20px}
+/* ---- redesign ---- */
+:root{--ac:#635bff;--bar:#e9e8ff;--soft:#efeeff;--bg:#f6f9fc;--card:#fff;--tx:#0a2540;--mut:#5b6b82;--bd:#e3e8ee;--sh:0 1px 2px rgba(10,37,64,.05),0 8px 24px rgba(10,37,64,.06)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ac:#7a73ff;--bar:#2b2a4d;--soft:#24234a;--bg:#0a1424;--card:#101c30;--tx:#e6ecf5;--mut:#93a3bb;--bd:#22324a;--sh:0 8px 24px rgba(0,0,0,.35);--code:#0a1424}}
+body{-webkit-font-smoothing:antialiased;letter-spacing:-.003em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd)}
+.topin{max-width:1040px;margin:auto;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:700;color:var(--tx);display:flex;align-items:center;gap:8px;white-space:nowrap;letter-spacing:-.01em}
+.logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#635bff,#ff7eb3);display:grid;place-items:center;color:#fff;font-size:12px}
+nav{flex:1;max-width:none;margin:0;padding:0;gap:2px}
+nav button{border:0;background:none;color:var(--mut);border-radius:8px;padding:7px 12px;font-weight:500;font-size:14px}
+nav button:hover{color:var(--tx)}nav button.on{background:var(--soft);color:var(--ac)}
+.gh{font-size:13px;font-weight:600;color:var(--tx);text-decoration:none;border:1px solid var(--bd);border-radius:999px;padding:6px 12px;background:var(--card)}
+@media(max-width:760px){nav{order:3;flex:1 0 100%}.brand{margin-right:auto}}
+section.on{animation:fade .35s ease}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card,.stat{border-radius:14px;box-shadow:var(--sh)}
+.card h2{font-size:20px;letter-spacing:-.015em}
+.stat b{font-size:32px;letter-spacing:-.03em;background:linear-gradient(120deg,var(--ac),#ff7eb3);-webkit-background-clip:text;background-clip:text;color:transparent}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);font-weight:600}
+.btn{border-radius:999px;font-weight:600}.btn.big{padding:12px 22px}
+.meter u{transition:width .6s ease,background .3s}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;padding:40px 36px;border-radius:22px;margin-bottom:16px;border:1px solid var(--bd);background:radial-gradient(700px 360px at 100% 0,rgba(99,91,255,.20),transparent 60%),radial-gradient(600px 340px at 0 100%,rgba(255,138,101,.16),transparent 60%),var(--card)}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding:26px 18px}}
+.hero h1{font-size:clamp(32px,5.2vw,48px);line-height:1.06;letter-spacing:-.035em;margin:12px 0}
+.hero p{color:var(--mut);font-size:16px;margin:0 0 6px}.hero .by{font-size:13px;margin-top:18px}
+.eyebrow{display:inline-block;font-size:12px;font-weight:600;color:var(--ac);background:var(--soft);padding:4px 11px;border-radius:999px}
+.mock{background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:var(--sh);padding:16px 18px;position:relative;overflow:hidden}
+.mh{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut)}.mh b{color:var(--tx)}
+.pc{margin:8px 0 2px}.pc span{font-size:46px;font-weight:700;letter-spacing:-.04em}.pc small{color:var(--mut);font-size:13px}
+.pv{transition:opacity .3s}.mock.sc .pv{opacity:.3}
+.scan{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:0;animation:sc 1.1s linear infinite}.mock.sc .scan{opacity:1}
+@keyframes sc{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--bar)}.chip.x{background:rgba(196,48,43,.14);color:var(--bad);font-weight:600}
+footer{max-width:1040px;margin:auto;padding:22px 20px 48px;color:var(--mut);font-size:13px;border-top:1px solid var(--bd)}footer b{color:var(--tx)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ---- teal + orange palette, auth, history ---- */
+:root{--ac:#0f766e;--ac2:#f97316;--onac:#fff;--bar:#d7ece9;--soft:#dcf3ef;--bg:#f3f7f6;--card:#fff;--tx:#0b1f2a;--mut:#54666d;--bd:#dbe5e3;--code:#edf3f2;--c1:#2563eb;--c2:#0d9488;--c3:#f59e0b;--c4:#e11d48;--sh:0 1px 2px rgba(11,31,42,.05),0 8px 24px rgba(11,31,42,.07)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ac:#2dd4bf;--onac:#042f2a;--bar:#153840;--soft:#12353b;--bg:#06141a;--card:#0d232b;--tx:#e5f2f0;--mut:#8fb0ab;--bd:#1c3b43;--code:#06141a;--c1:#60a5fa;--c2:#2dd4bf;--c3:#fbbf24;--c4:#fb7185;--sh:0 8px 24px rgba(0,0,0,.4)}}
+.btn{color:var(--onac)}.btn.alt{color:var(--tx)}.btn.sm{padding:6px 14px;font-size:13px}.btn.full{width:100%;padding:11px}
+.logo{background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.stat b{background:linear-gradient(120deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{background:radial-gradient(700px 380px at 100% 0,rgba(45,212,191,.30),transparent 60%),radial-gradient(600px 340px at 0 100%,rgba(249,115,22,.32),transparent 60%),#0b1f2a;border-color:#0b1f2a}
+.hero h1{color:#fff}.hero p{color:rgba(255,255,255,.78)}
+.hero .eyebrow{background:rgba(255,255,255,.12);color:#5eead4}
+.hero .btn:not(.alt){background:var(--ac2);color:#1a0b00}.hero .btn.alt{background:rgba(255,255,255,.14);color:#fff}
+.authbox{display:flex;align-items:center;gap:8px}
+.who{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;max-width:150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.who i{flex:0 0 28px;height:28px;border-radius:50%;background:var(--ac);color:var(--onac);display:grid;place-items:center;font-style:normal}
+@media(max-width:560px){.gh{display:none}.who{max-width:90px}}
+.authpg{display:grid;grid-template-columns:1fr 1fr;border-radius:22px;overflow:hidden;border:1px solid var(--bd);box-shadow:var(--sh);background:var(--card);max-width:880px;margin:10px auto}
+@media(max-width:760px){.authpg{grid-template-columns:1fr}}
+.ap{padding:36px 30px;color:#fff;background:radial-gradient(500px 300px at 100% 0,rgba(45,212,191,.3),transparent 60%),radial-gradient(500px 300px at 0 100%,rgba(249,115,22,.35),transparent 60%),#0b1f2a}
+.ap h2{font-size:28px;line-height:1.12;letter-spacing:-.03em;margin:14px 0 10px}.ap p,.ap li{color:rgba(255,255,255,.8)}.ap ul{padding-left:18px}
+.ap .eyebrow{background:rgba(255,255,255,.12);color:#5eead4}
+.aw{padding:32px 30px}.aw h2{margin:0 0 14px;font-size:22px}
+.af{display:flex;flex-direction:column;gap:12px}
+.af input:not([type=checkbox]){width:100%;margin-top:3px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.af input:focus{outline:2px solid var(--ac);outline-offset:1px}
+.err{color:var(--bad);font-size:13px;min-height:18px}
+.sw{font-size:13px;color:var(--mut);margin-top:12px}.sw a{color:var(--ac);font-weight:600}
+.chk{display:flex!important;align-items:center;gap:6px}
+.str{height:6px;background:var(--bar);border-radius:3px;margin-top:6px}.str u{display:block;height:100%;width:0;border-radius:3px;transition:width .3s,background .3s}
+.gate{text-align:center;max-width:520px;margin:20px auto;padding:34px 24px}.lock{font-size:34px}
+.hh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+select{padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+td .btn.sm{padding:3px 10px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--tx);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;z-index:40;pointer-events:none}.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="top"><div class="topin">
+<div class="brand"><span class="logo">◆</span>Fraud Detection <span style="color:var(--ac)">ML</span></div>
+<nav id="nav">
+<button data-t="overview" class="on">Overview</button>
+<button data-t="explore">Data Explorer</button>
+<button data-t="train">Train Model</button>
+<button data-t="perf">Model Performance</button>
+<button data-t="check">Check a Transaction</button>
+<button data-t="batch">Batch Detection</button>
+<button data-t="history">History</button>
+</nav>
+<a class="gh" href="https://github.com/kritikapathak04/Credit-Card-Fraud-Detection-Using-ML" target="_blank" rel="noopener">GitHub ↗</a>
+<div class="authbox" id="auth"></div>
+</div></div>
+<main>
+
+<!-- OVERVIEW -->
+<section id="overview" class="on">
+<div class="hero"><div>
+<span class="eyebrow">ML pipeline complete · dashboard in progress</span>
+<h1>Stop fraud without crying wolf.</h1>
+<p>An end-to-end machine-learning pipeline for highly imbalanced card data. On 56,746 held-out transactions it caught 69 of 95 frauds with only 4 false alarms.</p>
+<div class="acts"><button class="btn big" data-go="check">Score a transaction</button><button class="btn big alt" data-go="perf">See the results</button></div>
+<p class="by">Kritika Pathak · Nida Fatima · Guide: Ms. Shiwangi Shukla<br>B.Tech CSE, IILM University · Project BT18</p>
+</div>
+<div class="mock" id="mock"><div class="scan"></div>
+<div class="mh"><span>Payment analysis · <b id="mN">…</b></span><span id="mS">Scanning…</span></div>
+<div class="pv"><div class="pc"><span id="mP">--</span><small> fraud probability</small></div>
+<div class="meter"><u id="mB" style="width:0"></u><s style="left:41.6%"></s></div>
+<div class="leg">Marker = tuned threshold 0.416 · illustrative demo scorer, not the trained model</div>
+<div class="chips" id="mC"></div></div></div>
+</div>
+<div class="grid">
+<div class="stat"><b>283,726</b><span>transactions after removing 1,081 duplicates</span></div>
+<div class="stat"><b>0.172%</b><span>fraud rate in raw data (492 of 284,807)</span></div>
+<div class="stat"><b>0.815</b><span>PR-AUC, selected Random Forest</span></div>
+<div class="stat"><b>69 of 95</b><span>test frauds caught, 4 false alarms</span></div>
+</div>
+<div class="card" style="margin-top:16px"><h2>The problem</h2>
+<p>Fraud is rare but costly. A model that always answers "legitimate" is about 99.8% accurate and detects nothing. This project addresses four gaps:</p>
+<ul class="t">
+<li><b>Misleading metrics:</b> models are judged by PR-AUC (primary), recall, precision, F1, MCC and ROC-AUC.</li>
+<li><b>Data leakage:</b> duplicates removed, scaler fitted on training data only, class weights instead of oversampling, test set untouched until final reporting.</li>
+<li><b>Default thresholds:</b> the 0.5 cut-off is tuned on a validation set (selected: 0.416).</li>
+<li><b>Model choice:</b> linear baseline, bagging, boosting and an unsupervised detector compared on identical splits.</li>
+</ul></div>
+<div class="card"><h2>System architecture</h2>
+<div class="layers">
+<div class="layer" style="border-color:#e0a030"><h4>DATA LAYER</h4><p>data/creditcard.csv<br><small>Kaggle ULB dataset</small></p><p>data_loader.py<br><small>load + schema validation</small></p><p>generate_sample_data.py<br><small>synthetic fallback, never used for reported results</small></p></div>
+<div class="layer" style="border-color:#2a9d6a"><h4>ML PIPELINE (src/)</h4><p>preprocessing.py<br><small>clean · features · scale</small></p><p>models.py<br><small>4 candidate models</small></p><p>training.py<br><small>split → fit → tune</small></p><p>evaluate.py / predict.py<br><small>metrics · threshold · inference</small></p></div>
+<div class="layer" style="border-color:#6b66e8"><h4>INTERFACE LAYER</h4><p>train.py (CLI)<br><small>primary interface</small></p><p>app.py (Streamlit)<br><small>dashboard, in progress</small></p><p>tests/test_pipeline.py<br><small>pytest</small></p></div>
+</div>
+<p class="leg" style="margin-top:10px">Outputs: models/best_model.joblib (pipeline + tuned threshold) · results/ (metrics, tables, plots)</p></div>
+<div class="card"><h2>Implementation status</h2>
+<div class="tw"><table>
+<tr><th>Capability</th><th>Status</th><th class="l">Source</th></tr>
+<tr><td>Data loading and schema validation</td><td><span class="tag pdone">Completed</span></td><td class="w">src/data_loader.py</td></tr>
+<tr><td>Cleaning and feature engineering (Hour, Log_Amount)</td><td><span class="tag pdone">Completed</span></td><td class="w">src/preprocessing.py</td></tr>
+<tr><td>Four-model training and comparison</td><td><span class="tag pdone">Completed</span></td><td class="w">src/models.py, training.py</td></tr>
+<tr><td>Metrics, plots, threshold tuning, model selection</td><td><span class="tag pdone">Completed</span></td><td class="w">src/evaluate.py</td></tr>
+<tr><td>Permutation importance</td><td><span class="tag pdone">Completed</span></td><td class="w">src/evaluate.py</td></tr>
+<tr><td>Inference and risk levels</td><td><span class="tag pdone">Completed</span></td><td class="w">src/predict.py</td></tr>
+<tr><td>Automated tests (5 reported passing)</td><td><span class="tag pdone">Completed</span></td><td class="w">tests/test_pipeline.py</td></tr>
+<tr><td>Streamlit dashboard (6 pages)</td><td><span class="tag pprog">In progress</span></td><td class="w">app.py</td></tr>
+<tr><td>Multi-seed evaluation, SMOTE ablation, XGBoost/LightGBM + SHAP</td><td><span class="tag pplan">Planned</span></td><td class="w">none yet</td></tr>
+<tr><td>FastAPI REST API, Docker, drift monitoring</td><td><span class="tag pplan">Planned</span></td><td class="w">none yet</td></tr>
+</table></div></div>
+<div class="card"><h2>Limitations</h2><ul class="t">
+<li>V1 to V28 are PCA-anonymised, so predictions cannot be explained in business terms (merchant, location).</li>
+<li>Two days of data only; real fraud patterns drift over time.</li>
+<li>Only 95 frauds in the test set, so metrics have high variance. Results come from the quick 60-tree run.</li>
+<li>Latency, training time and memory use have not been measured yet.</li>
+<li>Built for learning and demonstration, not production fraud screening.</li></ul></div>
+</section>
+
+<!-- DATA EXPLORER -->
+<section id="explore">
+<div class="card"><h2>Class balance (after duplicate removal)</h2>
+<div class="row"><i>Legitimate</i><div><u style="width:100%"></u></div><em>283,253</em></div>
+<div class="row"><i>Fraud</i><div><u style="width:2px;min-width:2px;background:var(--bad)"></u></div><em>473</em></div>
+<p class="note">Fraud is 0.167% of the cleaned data. The bar is drawn to true scale, which is why it is barely visible. This is the imbalance the whole project is built around.</p></div>
+<div class="card"><h2>Explore your own creditcard.csv</h2>
+<p>Amount distribution, fraud by hour and feature correlations need the raw file, which is not bundled here. Choose your <code>data/creditcard.csv</code> and this page will compute them in your browser. Nothing is uploaded. The file is read in a stream, so the 150 MB Kaggle CSV is fine.</p>
+<div class="drop"><input type="file" id="big" accept=".csv"><div class="prog"><u id="pg"></u></div><div id="pst" class="leg"></div></div>
+<p class="note">Stats are computed on the raw file, so the 1,081 duplicates are not removed (492 frauds instead of 473).</p>
+<div id="xout"></div></div>
+</section>
+
+<!-- TRAIN -->
+<section id="train">
+<div class="card"><h2>Training runs in Python, not in the browser</h2>
+<p>The report designs this page to launch training from the dashboard. A static web page cannot run scikit-learn, so use the command line, which produces everything the dashboard shows:</p>
+<pre><code>python -m venv venv
+venv\Scripts\activate          # macOS/Linux: source venv/bin/activate
+pip install -r requirements.txt
+python train.py --fast         # 60-tree Random Forest, reported run
+python train.py                # full run, 150 trees
+pytest -q                      # 5 tests: schema, preprocessing, training, inference, threshold</code></pre></div>
+<div class="g2">
+<div class="card"><h2>What train.py does</h2>
+<ol class="steps">
+<li>Load dataset (284,807 rows)</li>
+<li>Drop duplicates and missing values (283,726 rows)</li>
+<li>Feature engineering: Hour, Log_Amount; RobustScaler fitted on train only</li>
+<li>Stratified split: 64% train / 16% validation / 20% test</li>
+<li>Train 4 models with balanced class weights (train set)</li>
+<li>Select best model by validation PR-AUC</li>
+<li>Tune the decision threshold: maximise F1 on validation set</li>
+<li>Final evaluation on the untouched test set</li>
+<li>Save pipeline + threshold; export metrics and plots</li></ol></div>
+<div>
+<div class="card"><h2>Reported run settings</h2><div class="tw"><table>
+<tr><td>Command</td><td class="w">python train.py --fast</td></tr>
+<tr><td>Imbalance</td><td class="w">Class weights (balanced)</td></tr>
+<tr><td>Selection</td><td class="w">Validation PR-AUC</td></tr>
+<tr><td>Threshold</td><td class="w">Max F1 on validation (0.416)</td></tr>
+<tr><td>Hardware</td><td class="w">Windows 11, Core i5, 16 GB RAM</td></tr>
+<tr><td>Libraries</td><td class="w">Python 3.10+, scikit-learn 1.4+, pandas 2.2+</td></tr></table></div></div>
+<div class="card"><h2>Class weight calculator</h2>
+<p style="margin:0 0 8px;font-size:13px;color:var(--mut)">w<sub>c</sub> = N / (K × N<sub>c</sub>)</p>
+<form onsubmit="return false"><label>Samples N<input type="number" id="cwN" value="283726"></label><label>Frauds<input type="number" id="cwF" value="473"></label></form>
+<div id="cwo" style="margin-top:10px"></div></div>
+</div></div>
+<div class="card"><h2>Candidate models</h2><div class="tw"><table>
+<tr><th>Model</th><th class="l">Family</th><th class="l">Role</th></tr>
+<tr><td>Logistic Regression</td><td class="w">Linear</td><td class="w">Interpretable baseline</td></tr>
+<tr><td>Random Forest</td><td class="w">Bagging ensemble</td><td class="w">Non-linear trees (60 trees in --fast)</td></tr>
+<tr><td>HistGradientBoosting</td><td class="w">Boosting ensemble</td><td class="w">Gradient-boosted trees</td></tr>
+<tr><td>Isolation Forest</td><td class="w">Unsupervised</td><td class="w">Anomaly detection without labels</td></tr></table></div></div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="perf">
+<div class="card"><h2>Test-set results</h2>
+<p style="margin-top:0;color:var(--mut);font-size:14px">Real Kaggle dataset · <code>train.py --fast</code> · 56,746 test transactions (95 frauds) · model chosen on validation PR-AUC</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>Precision</th><th>Recall</th><th>F1</th><th>PR-AUC</th><th>ROC-AUC</th><th>MCC</th></tr>
+<tr class="sel"><td>Random Forest (selected, thr. 0.416)</td><td>0.945</td><td>0.726</td><td>0.821</td><td>0.815</td><td>0.941</td><td>0.828</td></tr>
+<tr><td>Gradient Boosting (HistGB)</td><td>0.893</td><td>0.705</td><td>0.788</td><td>0.719</td><td>0.929</td><td>0.793</td></tr>
+<tr><td>Logistic Regression</td><td>0.859</td><td>0.768</td><td>0.811</td><td>0.683</td><td>0.965</td><td>0.812</td></tr>
+<tr><td>Isolation Forest (unsupervised)</td><td>0.227</td><td>0.179</td><td>0.200</td><td>0.114</td><td>0.935</td><td>0.200</td></tr>
+</table></div>
+<div id="gc"></div>
+<div class="leg"><b style="background:var(--c1)"></b>Precision<b style="background:var(--c2)"></b>Recall<b style="background:var(--c3)"></b>F1<b style="background:var(--c4)"></b>PR-AUC</div></div>
+<div class="g2">
+<div class="card"><h2>Confusion matrix (selected, thr. 0.416)</h2>
+<div class="cm"><div class="h"></div><div class="h">Pred. legit</div><div class="h">Pred. fraud</div>
+<div class="h">Actual legit</div><div class="g"><b>56,647</b>TN</div><div class="r"><b>4</b>FP</div>
+<div class="h">Actual fraud</div><div class="r"><b>26</b>FN</div><div class="g"><b>69</b>TP</div></div>
+<h3>Metrics recomputed from these counts</h3><div id="mc"></div></div>
+<div class="card"><h2>Most influential features</h2><div id="fi"></div>
+<p class="note">Permutation importance on validation data. The report gives the ranking only; exact values are in results/feature_importance.csv.</p></div>
+</div>
+<div class="card"><h2>Interpretation</h2>
+<p>Random Forest has the best PR-AUC (0.815) and precision (0.945): only 4 of 56,651 legitimate transactions were flagged, but about 27% of frauds (26 of 95) were missed. Logistic Regression has higher recall (0.768) and ROC-AUC (0.965) but a clearly lower PR-AUC (0.683). Ranking by ROC-AUC alone would have picked it, which is why PR-AUC is the better criterion here. Isolation Forest has a high ROC-AUC (0.935) yet very low precision and F1, so labelled supervision matters.</p>
+<p class="note">With 95 test frauds, each metric can move by several points with a different split or seed. ROC and precision-recall curve traces are not included in the linked repository, so they are not drawn here.</p></div>
+</section>
+
+<!-- CHECK -->
+<section id="check">
+<div class="card"><h2>Check a transaction</h2>
+<p class="note">Demo scorer. The trained model lives in Python (models/best_model.joblib) and cannot run in a browser. This page uses a simple hand-weighted formula over the top features to show the interface. It does not reproduce the real model's predictions. The risk bands (High above 70%, Medium above the 0.416 threshold) are also illustrative.</p>
+<div class="acts" style="margin:0 0 14px"><button class="btn alt" id="sl">Load legitimate sample</button><button class="btn alt" id="sf">Load suspicious sample</button></div>
+<form id="f" onsubmit="return false">
+<label>Amount<input type="number" id="Amount" step="any" value="45"></label>
+<label>Hour of day (0 to 23)<input type="number" id="Hour" min="0" max="23" value="14"></label>
+<label>V3<input type="number" id="V3" step="any" value="0.5"></label>
+<label>V4<input type="number" id="V4" step="any" value="0.2"></label>
+<label>V11<input type="number" id="V11" step="any" value="0"></label>
+<label>V14<input type="number" id="V14" step="any" value="0.1"></label>
+<label>V20<input type="number" id="V20" step="any" value="0"></label>
+</form>
+<div class="acts"><button class="btn" id="go">Score transaction</button></div>
+<div class="res" id="res"></div></div>
+<div class="card"><h2>Connecting the real model</h2>
+<p>Wrap <code>src/predict.py</code> in a small API (FastAPI is on the roadmap) that accepts the 30 input columns and returns a probability. Replace <code>score()</code> in this page with a <code>fetch()</code> call to it. Run the page locally or host it beside the API, since a published page cannot call other sites.</p></div>
+</section>
+
+<!-- BATCH -->
+<section id="batch">
+<div class="card"><h2>Batch detection</h2>
+<p class="note">Same demo scorer as above, run entirely in your browser. Nothing is uploaded. The report's design also offers downloading results; that needs the Streamlit app or an API.</p>
+<div class="drop">Paste CSV below or choose a file. Columns used: Time, Amount, V3, V4, V11, V14, V20 (missing ones count as 0).<br><br>
+<input type="file" id="file" accept=".csv"></div>
+<textarea id="csv" rows="5" style="margin-top:12px" placeholder="Time,Amount,V3,V4,V11,V14,V20&#10;50400,45,0.5,0.2,0,0.1,0&#10;9000,310,-5,4,3,-8,1"></textarea>
+<div class="acts"><button class="btn" id="run">Run detection</button><button class="btn alt" id="ex">Use example</button></div>
+<div id="bout"></div></div>
+</section>
+
+<!-- GATE -->
+<section id="gate"><div class="card gate"><div class="lock">🔒</div><h2>Sign in to continue</h2>
+<p>Scoring transactions, batch detection and history are for registered users, so every check can be saved to your history.</p>
+<div class="acts" style="justify-content:center"><button class="btn big" data-a="login">Sign in</button><button class="btn big alt" data-a="register">Create account</button></div></div></section>
+
+<!-- LOGIN -->
+<section id="login"><div class="authpg">
+<div class="ap"><span class="eyebrow">Welcome back</span><h2>Sign in to keep your history.</h2><p>Every transaction you check is saved to your account.</p>
+<ul><li>Saved single and batch checks</li><li>Reload a past transaction in one click</li><li>Track your flag rate over time</li></ul></div>
+<div class="aw"><h2>Sign in</h2>
+<form class="af" id="lf" novalidate>
+<label>Username or email<input type="text" id="lu" autocomplete="username" required></label>
+<label>Password<input type="password" id="lp" autocomplete="current-password" required></label>
+<label class="chk"><input type="checkbox" id="sp2"> Show password</label>
+<div class="err" id="lerr" role="alert"></div>
+<button class="btn full" type="submit">Sign in</button></form>
+<p class="sw">No account yet? <a href="#" data-a="register">Create one</a></p>
+<p class="note">Demo accounts live only in this browser (local storage). Nothing is sent to a server.</p></div>
+</div></section>
+
+<!-- REGISTER -->
+<section id="register"><div class="authpg">
+<div class="ap"><span class="eyebrow">Create your account</span><h2>Check transactions. Remember every result.</h2><p>Registration takes under a minute.</p>
+<ul><li>Score single transactions and CSV batches</li><li>Full history with filters</li><li>Passwords are salted and hashed (PBKDF2) before storing</li></ul></div>
+<div class="aw"><h2>Register</h2>
+<form class="af" id="rf" novalidate>
+<label>Full name<input type="text" id="rn" autocomplete="name" required></label>
+<label>Email<input type="email" id="re" autocomplete="email" required></label>
+<label>Username<input type="text" id="ru" autocomplete="username" placeholder="3 to 20 letters, numbers, _" required></label>
+<label>Password<input type="password" id="rp" autocomplete="new-password" required><div class="str"><u id="sb"></u></div><small id="stl" class="leg"></small></label>
+<label>Confirm password<input type="password" id="rp2" autocomplete="new-password" required></label>
+<label class="chk"><input type="checkbox" id="sp1"> Show passwords</label>
+<div class="err" id="rerr" role="alert"></div>
+<button class="btn full" type="submit">Create account</button></form>
+<p class="sw">Already registered? <a href="#" data-a="login">Sign in</a></p>
+<p class="note">Demo only: accounts are stored in this browser, not on a server. A real deployment needs a backend (for example the planned FastAPI service) with a database.</p></div>
+</div></section>
+
+<!-- HISTORY -->
+<section id="history"><div class="grid" id="hs"></div>
+<div class="card" style="margin-top:16px"><div class="hh"><h2 style="margin:0">Check history</h2>
+<div class="acts" style="margin:0"><select id="hfil"><option value="all">All checks</option><option value="single">Single transactions</option><option value="batch">Batch runs</option></select><button class="btn alt sm" id="hclr">Clear all</button></div></div>
+<p class="note">Saved in this browser for your account only. Scores come from the demo scorer, not the trained model.</p>
+<div class="tw"><table><thead><tr><th>When</th><th>Type</th><th class="l">Details</th><th>Result</th><th></th></tr></thead><tbody id="hb"></tbody></table></div>
+<p id="hempty" class="leg">No history yet. Score a transaction or run a batch and it will appear here.</p></div></section>
+<div class="toast" id="toast"></div>
+</main>
+<footer><b>Credit Card Fraud Detection by ML</b> · Kritika Pathak (CS-23411554), Nida Fatima (CS-2341757) · Guide: Ms. Shiwangi Shukla · IILM University<br>Dataset: Worldline and the ULB Machine Learning Group (Kaggle). Built for learning and demonstration, not production fraud screening. Layout inspired by public fraud-prevention product pages such as Stripe Radar; no Stripe content or branding is used.</footer>
+<script>
+const TH=0.416,$=id=>document.getElementById(id),f0=(n)=>n.toLocaleString('en-US');
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+  scrollTo(0,0);
+});
+function bars(el,data,max,fmt){el.innerHTML=data.map(d=>`<div class="row"><i>${d[0]}</i><div><u style="width:${d[1]/max*100}%"></u></div><em>${fmt(d[1])}</em></div>`).join('')}
+// grouped vertical bars: groups=[label,[vals...]], colors=[css vars]
+function vbars(el,groups,colors,max,showVal){
+  el.innerHTML='<div class="vb">'+groups.map(g=>`<div><div class="p">${g[1].map((v,i)=>`<u title="${v}" style="height:${Math.max(v/max*100,0)}%;background:var(${colors[i]})"></u>`).join('')}</div><small>${g[0]}</small></div>`).join('')+'</div>';
+}
+
+/* Performance */
+vbars($('gc'),[['RF (sel.)',[.945,.726,.821,.815]],['HistGB',[.893,.705,.788,.719]],['LogReg',[.859,.768,.811,.683]],['IsoFor',[.227,.179,.2,.114]]],['--c1','--c2','--c3','--c4'],1);
+bars($('fi'),[['V14',5],['V4',4],['V3',3],['V11',2],['V20',1]],5,v=>'rank '+(6-v));
+(function(){const TN=56647,FP=4,FN=26,TP=69,P=TP/(TP+FP),R=TP/(TP+FN),F=2*P*R/(P+R),
+M=(TP*TN-FP*FN)/Math.sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN));
+bars($('mc'),[['Precision',P],['Recall',R],['F1',F],['MCC',M]],1,v=>v.toFixed(3));})();
+
+/* Train: class weights */
+function cw(){const N=+$('cwN').value,F=+$('cwF').value;if(!(N>F&&F>0)){$('cwo').innerHTML='<span class="leg">Enter N greater than frauds, and frauds above 0.</span>';return}
+ const w0=N/(2*(N-F)),w1=N/(2*F);$('cwo').innerHTML=`Legitimate weight: <b>${w0.toFixed(3)}</b><br>Fraud weight: <b>${w1.toFixed(1)}</b><br><span class="leg">Each fraud error counts about ${(w1/w0).toFixed(0)}× a legitimate one.</span>`}
+$('cwN').oninput=$('cwF').oninput=cw;cw();
+
+/* Data Explorer: streaming analysis */
+$('big').onchange=async e=>{
+  const file=e.target.files[0];if(!file)return;
+  $('xout').innerHTML='';$('pst').textContent='Reading…';
+  const rd=file.stream().getReader(),dec=new TextDecoder();let buf='',read=0,idx=null,rows=0;
+  const NB=12,hr=[Array(24).fill(0),Array(24).fill(0)],am=[Array(NB).fill(0),Array(NB).fill(0)],
+    sx=Array(28).fill(0),sxx=Array(28).fill(0),sxy=Array(28).fill(0),cc=[0,0];
+  const proc=l=>{
+    if(!l.trim())return;const c=l.replace(/"/g,'').split(',');
+    if(!idx){idx={};c.forEach((h,i)=>idx[h.trim()]=i);return}
+    const y=+c[idx.Class];if(y!==0&&y!==1)return;
+    cc[y]++;rows++;
+    hr[y][Math.floor(+c[idx.Time]/3600)%24]++;
+    am[y][Math.min(NB-1,Math.floor(Math.log10(+c[idx.Amount]+1)*3))]++;
+    for(let k=0;k<28;k++){const v=+c[idx['V'+(k+1)]];sx[k]+=v;sxx[k]+=v*v;if(y)sxy[k]+=v}
+  };
+  try{
+    for(;;){const{done,value}=await rd.read();if(done)break;read+=value.length;
+      buf+=dec.decode(value,{stream:true});const ls=buf.split('\n');buf=ls.pop();ls.forEach(proc);
+      $('pg').style.width=(read/file.size*100)+'%'}
+    proc(buf);
+  }catch(err){$('pst').textContent='Could not read file: '+err.message;return}
+  if(!idx||idx.Class===undefined||idx.Amount===undefined||idx.Time===undefined||!rows){$('pst').textContent='This does not look like creditcard.csv (needs Time, Amount, Class columns).';return}
+  $('pst').textContent=`Done: ${f0(rows)} rows, ${f0(cc[1])} frauds (${(cc[1]/rows*100).toFixed(3)}%).`;
+  const n=rows,sy=cc[1],corr=[];
+  for(let k=0;k<28;k++){const d=Math.sqrt((n*sxx[k]-sx[k]**2)*(n*sy-sy*sy));corr.push(['V'+(k+1),d?(n*sxy[k]-sx[k]*sy)/d:0])}
+  corr.sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+  const rate=hr[0].map((v,h)=>{const t=v+hr[1][h];return t?hr[1][h]/t*100:0}),rm=Math.max(...rate,.001);
+  const pct=y=>am[y].map(v=>v/(cc[y]||1)*100),pl=pct(0),pf=pct(1),pm=Math.max(...pl,...pf);
+  $('xout').innerHTML=`<div class="g2"><div><h3>Fraud rate by hour of day (%)</h3><div id="x1"></div></div><div><h3>Amount distribution (% of each class)</h3><div id="x2"></div><div class="leg"><b style="background:var(--ac)"></b>Legitimate<b style="background:var(--bad)"></b>Fraud · log-spaced amount bins</div></div></div>
+  <h3>Features most correlated with Class (Pearson r)</h3><div id="x3"></div>`;
+  vbars($('x1'),rate.map((v,h)=>[h%3?'':h,[v]]),['--bad'],rm);
+  vbars($('x2'),pl.map((v,i)=>[i%2?'':'$'+f0(Math.round(10**(i/3)-1)),[v,pf[i]]]),['--ac','--bad'],pm);
+  const cm=Math.max(...corr.map(c=>Math.abs(c[1])));
+  $('x3').innerHTML=corr.slice(0,8).map(c=>`<div class="row"><i>${c[0]}</i><div><u style="width:${Math.abs(c[1])/cm*100}%;background:var(${c[1]<0?'--bad':'--ac'})"></u></div><em>${c[1].toFixed(3)}</em></div>`).join('')+'<div class="leg">Blue = positive, red = negative. Hour is Time modulo 24 h over two days.</div>';
+};
+
+/* Demo scorer (NOT the trained model) */
+function score(r){
+  const night=(r.Hour<=5)?0.5:0;
+  const z=-7+0.45*r.V4-0.3*r.V3-0.5*r.V14+0.3*r.V11+0.1*Math.abs(r.V20)+0.15*Math.log1p(r.Amount)+night;
+  return 1/(1+Math.exp(-z));
+}
+function level(p){return p>=0.7?['High','hi']:p>=TH?['Medium','me']:['Low','lo']}
+const SAMPLES={l:{Amount:45,Hour:14,V3:0.5,V4:0.2,V11:0,V14:0.1,V20:0},f:{Amount:310,Hour:2,V3:-5,V4:4,V11:3,V14:-8,V20:1}};
+function load(k){for(const key in SAMPLES[k])$(key).value=SAMPLES[k][key]}
+$('sl').onclick=()=>load('l');$('sf').onclick=()=>load('f');
+$('go').onclick=()=>{
+  const r={};['Amount','Hour','V3','V4','V11','V14','V20'].forEach(k=>r[k]=parseFloat($(k).value)||0);
+  const p=score(r),fraud=p>=TH,[lv,cls]=level(p),col=fraud?'var(--bad)':'var(--ok)',el=$('res');
+  el.className='res on';el.style.borderColor=col;
+  el.innerHTML=`<h3 style="color:${col}">${fraud?'⚠️ Flagged as likely fraud':'✅ Looks legitimate'}</h3>
+  <div>Fraud probability: <b>${(p*100).toFixed(1)}%</b> <span class="tag ${cls}">${lv} risk</span></div>
+  <div class="meter"><u style="width:${p*100}%;background:${col}"></u><s style="left:${TH*100}%"></s></div>
+  <small style="color:var(--mut)">Black marker = decision threshold (${TH}). Demo score only.</small>`;
+};
+
+/* Batch */
+function parseCSV(t){
+  const lines=t.trim().split(/\r?\n/).filter(Boolean);if(lines.length<2)return[];
+  const h=lines[0].split(',').map(s=>s.trim().replace(/"/g,''));
+  return lines.slice(1).map(l=>{const c=l.split(','),o={};h.forEach((k,i)=>o[k]=parseFloat((c[i]||'').replace(/"/g,''))||0);return o});
+}
+function runBatch(){
+  const rows=parseCSV($('csv').value);
+  if(!rows.length){$('bout').innerHTML='<p class="note">Add a header row and at least one data row.</p>';return}
+  const out=rows.map((r,i)=>{r.Hour=Math.floor((r.Time||0)/3600)%24;return{i:i+1,amt:r.Amount||0,p:score(r)}});
+  const fl=out.filter(o=>o.p>=TH).length;
+  $('bout').innerHTML=`<div class="grid" style="margin:16px 0"><div class="stat"><b>${out.length}</b><span>rows scored</span></div>
+  <div class="stat"><b style="color:var(--bad)">${fl}</b><span>flagged</span></div>
+  <div class="stat"><b>${(fl/out.length*100).toFixed(1)}%</b><span>flag rate</span></div></div>
+  <div class="tw"><table><tr><th>#</th><th>Amount</th><th>Fraud prob.</th><th>Risk</th></tr>`+
+  out.slice(0,100).map(o=>{const[l,c]=level(o.p);return`<tr><td>${o.i}</td><td>${o.amt}</td><td>${(o.p*100).toFixed(1)}%</td><td><span class="tag ${c}">${l}</span></td></tr>`}).join('')+
+  `</table></div>${out.length>100?'<p class="note">Showing first 100 rows.</p>':''}`;
+}
+$('run').onclick=runBatch;
+$('ex').onclick=()=>{$('csv').value='Time,Amount,V3,V4,V11,V14,V20\n50400,45,0.5,0.2,0,0.1,0\n9000,310,-5,4,3,-8,1\n72000,12.5,1.1,-0.4,-0.2,0.3,0\n7200,980,-4,3.5,2.5,-6,0.8\n36000,60,0.2,0.1,0.1,-0.2,0';runBatch()};
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('csv').value=r.result;runBatch()};r.readAsText(f)};
+
+/* Hero: cycling demo transactions */
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.querySelector('#nav [data-t="'+b.dataset.go+'"]').click());
+(function(){
+  const D=[{n:'Coffee order',Amount:45,Hour:14,V3:.5,V4:.2,V11:0,V14:.1,V20:0},{n:'Late-night electronics',Amount:980,Hour:2,V3:-4,V4:3.5,V11:2.5,V14:-6,V20:.8},{n:'Grocery shop',Amount:62,Hour:11,V3:1,V4:-.3,V11:-.2,V14:.4,V20:0},{n:'Gift cards',Amount:310,Hour:2,V3:-5,V4:4,V11:3,V14:-8,V20:1}];
+  let i=0;const m=$('mock');
+  function show(){
+    const d=D[i++%D.length];m.classList.add('sc');$('mN').textContent=d.n;$('mS').textContent='Scanning…';$('mP').textContent='--';
+    setTimeout(()=>{
+      const p=score(d),fr=p>=TH,col=fr?'var(--bad)':'var(--ok)';
+      m.classList.remove('sc');$('mS').innerHTML='<b style="color:'+col+'">'+(fr?'Fraud detected':'Fraud not detected')+'</b>';
+      $('mP').textContent=(p*100).toFixed(0)+'%';$('mP').style.color=col;$('mB').style.width=Math.max(p*100,2)+'%';$('mB').style.background=col;
+      $('mC').innerHTML=['V14','V4','V3','V11'].map(k=>`<span class="chip${Math.abs(d[k])>=2.5?' x':''}">${k} ${d[k]}</span>`).join('')+`<span class="chip${d.Hour<=5?' x':''}">Hour ${String(d.Hour).padStart(2,'0')}</span><span class="chip">Amount ${d.Amount}</span>`;
+    },900);
+  }
+  show();
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches)setInterval(show,4200);
+})();
+
+/* ---- Auth + history (browser-local demo) ---- */
+const mem={};
+const sget=k=>{try{return localStorage.getItem(k)}catch(e){return mem[k]??null}};
+const sset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){mem[k]=v}};
+const sdel=k=>{try{localStorage.removeItem(k)}catch(e){delete mem[k]}};
+const jget=(k,d)=>{try{return JSON.parse(sget(k))??d}catch(e){return d}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const canHash=()=>!!(window.crypto&&crypto.subtle);
+async function hashPw(pw,saltHex){
+  const salt=Uint8Array.from(saltHex.match(/../g).map(h=>parseInt(h,16)));
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+  return hex(await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},key,256));
+}
+let me=null,pending='check',hf='all';
+const PROT=['check','batch','history'];
+const users=()=>jget('fd_users',{});
+const hist=()=>me?jget('fd_hist_'+me,[]):[];
+const saveHist=h=>sset('fd_hist_'+me,JSON.stringify(h.slice(0,200)));
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),1800)}
+function addHist(e){if(!me)return;const h=hist();h.unshift({id:Date.now()+Math.random().toString(36).slice(2,6),t:Date.now(),...e});saveHist(h);toast('Saved to history')}
+
+function show2(t){document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.t===t));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));scrollTo(0,0)}
+function go(t){if(PROT.includes(t)&&!me){pending=t;t='gate'}show2(t);if(t==='history')renderHist()}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+function bindA(){document.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{e.preventDefault();show2(b.dataset.a)})}
+function chrome(){
+  const a=$('auth');
+  if(me){const u=users()[me]||{},nm=u.name||me;
+    a.innerHTML='<span class="who" title="'+esc(nm)+'"><i>'+esc((nm[0]||'?').toUpperCase())+'</i>'+esc(nm)+'</span><button class="btn alt sm" id="so">Sign out</button>';
+    $('so').onclick=()=>{sdel('fd_session');me=null;chrome();go('overview');toast('Signed out')};
+  }else a.innerHTML='<button class="btn alt sm" data-a="login">Sign in</button><button class="btn sm" data-a="register">Register</button>';
+  bindA();
+}
+function signIn(un){me=un;sset('fd_session',un);$('rf').reset();$('lf').reset();chrome();go(PROT.includes(pending)?pending:'check');pending='check'}
+
+$('rf').onsubmit=async e=>{
+  e.preventDefault();const v=id=>$(id).value.trim(),err=$('rerr');err.textContent='';
+  const name=v('rn'),email=v('re').toLowerCase(),un=v('ru').toLowerCase(),pw=$('rp').value;
+  if(name.length<2)return void(err.textContent='Enter your full name.');
+  if(!/^\S+@\S+\.\S+$/.test(email))return void(err.textContent='Enter a valid email address.');
+  if(!/^[a-z0-9_]{3,20}$/.test(un))return void(err.textContent='Username: 3 to 20 letters, numbers or underscores.');
+  if(pw.length<8||!/[a-z]/i.test(pw)||!/\d/.test(pw))return void(err.textContent='Password needs 8+ characters with a letter and a number.');
+  if(pw!==$('rp2').value)return void(err.textContent='Passwords do not match.');
+  const U=users();
+  if(U[un])return void(err.textContent='That username is taken.');
+  if(Object.values(U).some(x=>x.email===email))return void(err.textContent='An account with that email already exists.');
+  if(!canHash())return void(err.textContent='This browser cannot hash passwords securely.');
+  const salt=hex(crypto.getRandomValues(new Uint8Array(16)));
+  U[un]={name,email,salt,hash:await hashPw(pw,salt),created:Date.now()};
+  sset('fd_users',JSON.stringify(U));signIn(un);toast('Account created');
+};
+$('lf').onsubmit=async e=>{
+  e.preventDefault();const err=$('lerr');err.textContent='';
+  const id=$('lu').value.trim().toLowerCase(),pw=$('lp').value,U=users(),bad='Incorrect username or password.';
+  if(!canHash())return void(err.textContent='This browser cannot hash passwords securely.');
+  const un=U[id]?id:Object.keys(U).find(k=>U[k].email===id);
+  if(!un||await hashPw(pw,U[un].salt)!==U[un].hash)return void(err.textContent=bad);
+  signIn(un);
+};
+$('sp1').onchange=()=>['rp','rp2'].forEach(i=>$(i).type=$('sp1').checked?'text':'password');
+$('sp2').onchange=()=>$('lp').type=$('sp2').checked?'text':'password';
+$('rp').oninput=()=>{const p=$('rp').value;let s=0;if(p.length>=8)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^a-z0-9]/i.test(p)||p.length>=12)s++;
+  $('sb').style.width=s*25+'%';$('sb').style.background=['var(--bad)','var(--bad)','var(--warn)','var(--ok)','var(--ok)'][s];$('stl').textContent=p?['Weak','Weak','Fair','Good','Strong'][s]:''};
+
+/* history page */
+function renderHist(){
+  const h=hist(),list=h.filter(x=>hf==='all'||x.type===hf);
+  const scored=h.reduce((a,x)=>a+(x.type==='single'?1:x.rows),0),flagged=h.reduce((a,x)=>a+(x.type==='single'?+x.fraud:x.flagged),0);
+  $('hs').innerHTML='<div class="stat"><b>'+h.length+'</b><span>saved checks</span></div><div class="stat"><b>'+f0(scored)+'</b><span>transactions scored</span></div><div class="stat"><b>'+f0(flagged)+'</b><span>flagged as likely fraud</span></div><div class="stat"><b>'+(scored?(flagged/scored*100).toFixed(1):'0.0')+'%</b><span>flag rate</span></div>';
+  $('hb').innerHTML=list.map(x=>{
+    const when=new Date(x.t).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});let det,res;
+    if(x.type==='single'){const[l,c]=level(x.p);det='Amount '+x.in.Amount+' · Hour '+x.in.Hour+' · V3 '+x.in.V3+' · V4 '+x.in.V4+' · V11 '+x.in.V11+' · V14 '+x.in.V14+' · V20 '+x.in.V20;res=(x.p*100).toFixed(1)+'% <span class="tag '+c+'">'+l+'</span>'}
+    else{det=f0(x.rows)+' rows scored';res=x.flagged+' flagged ('+(x.flagged/x.rows*100).toFixed(1)+'%)'}
+    return '<tr><td>'+when+'</td><td>'+(x.type==='single'?'Single':'Batch')+'</td><td class="w">'+det+'</td><td>'+res+'</td><td>'+(x.type==='single'?'<button class="btn alt sm" data-r="'+esc(x.id)+'">Reload</button> ':'')+'<button class="btn alt sm" data-d="'+esc(x.id)+'">Delete</button></td></tr>';
+  }).join('');
+  $('hempty').style.display=list.length?'none':'block';
+}
+$('hb').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.d){saveHist(hist().filter(x=>x.id!==b.dataset.d));renderHist()}
+  if(b.dataset.r){const x=hist().find(y=>y.id===b.dataset.r);if(x){for(const k in x.in)$(k).value=x.in[k];go('check')}}};
+$('hfil').onchange=e=>{hf=e.target.value;renderHist()};
+let cf=0;$('hclr').onclick=()=>{if(!cf){cf=1;$('hclr').textContent='Click again to confirm';setTimeout(()=>{cf=0;$('hclr').textContent='Clear all'},3000)}else{saveHist([]);cf=0;$('hclr').textContent='Clear all';renderHist()}};
+
+/* record checks */
+const _go=$('go').onclick;
+$('go').onclick=()=>{_go();const r={};['Amount','Hour','V3','V4','V11','V14','V20'].forEach(k=>r[k]=parseFloat($(k).value)||0);const p=score(r);addHist({type:'single',in:r,p,fraud:p>=TH})};
+const _rb=runBatch;
+runBatch=function(){_rb();const rows=parseCSV($('csv').value);if(!rows.length)return;let fl=0;rows.forEach(r=>{r.Hour=Math.floor((r.Time||0)/3600)%24;if(score(r)>=TH)fl++});addHist({type:'batch',rows:rows.length,flagged:fl})};
+$('run').onclick=runBatch;
+
+me=sget('fd_session');if(me&&!users()[me])me=null;
+chrome();bindA();
+</script>
+</body>
+</html>
