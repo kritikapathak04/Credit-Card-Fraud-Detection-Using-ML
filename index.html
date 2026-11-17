@@ -288,7 +288,7 @@ pytest -q                      # 5 tests: schema, preprocessing, training, infer
 <!-- CHECK -->
 <section id="check">
 <div class="card"><h2>Check a transaction</h2>
-<p class="note">Demo scorer. The trained model lives in Python (models/best_model.joblib) and cannot run in a browser. This page uses a simple hand-weighted formula over the top features to show the interface. It does not reproduce the real model's predictions. The risk bands (High above 70%, Medium above the 0.416 threshold) are also illustrative.</p>
+<p class="note">Demo scorer by default. Connect the trained-model API below to use the real model. The trained model lives in Python (models/best_model.joblib) and cannot run in a browser. This page uses a simple hand-weighted formula over the top features to show the interface. It does not reproduce the real model's predictions. The risk bands (High above 70%, Medium above the 0.416 threshold) are also illustrative.</p>
 <div class="acts" style="margin:0 0 14px"><button class="btn alt" id="sl">Load legitimate sample</button><button class="btn alt" id="sf">Load suspicious sample</button></div>
 <form id="f" onsubmit="return false">
 <label>Amount<input type="number" id="Amount" step="any" value="45"></label>
@@ -301,8 +301,10 @@ pytest -q                      # 5 tests: schema, preprocessing, training, infer
 </form>
 <div class="acts"><button class="btn" id="go">Score transaction</button></div>
 <div class="res" id="res"></div></div>
-<div class="card"><h2>Connecting the real model</h2>
-<p>Wrap <code>src/predict.py</code> in a small API (FastAPI is on the roadmap) that accepts the 30 input columns and returns a probability. Replace <code>score()</code> in this page with a <code>fetch()</code> call to it. Run the page locally or host it beside the API, since a published page cannot call other sites.</p></div>
+<div class="card"><h2>Use the trained model (optional)</h2>
+<p>Start the FastAPI service (<code>uvicorn api:app --port 8000</code>), enter its address and this page scores with <code>best_model.joblib</code> instead of the demo formula. This works when the page is opened from GitHub Pages or a local file. The claude.ai preview blocks calls to other sites.</p>
+<div class="acts" style="margin-top:8px"><input type="text" id="apiurl" placeholder="http://localhost:8000" style="flex:1;min-width:200px;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit"><button class="btn" id="apitest">Test connection</button><button class="btn alt" id="apioff">Use demo scorer</button></div>
+<div id="apist" class="leg" style="margin-top:8px"></div></div>
 </section>
 
 <!-- BATCH -->
@@ -358,7 +360,7 @@ pytest -q                      # 5 tests: schema, preprocessing, training, infer
 <section id="history"><div class="grid" id="hs"></div>
 <div class="card" style="margin-top:16px"><div class="hh"><h2 style="margin:0">Check history</h2>
 <div class="acts" style="margin:0"><select id="hfil"><option value="all">All checks</option><option value="single">Single transactions</option><option value="batch">Batch runs</option></select><button class="btn alt sm" id="hclr">Clear all</button></div></div>
-<p class="note">Saved in this browser for your account only. Scores come from the demo scorer, not the trained model.</p>
+<p class="note">Saved in this browser for your account only. Entries tagged "model" came from the trained-model API; the rest used the demo scorer.</p>
 <div class="tw"><table><thead><tr><th>When</th><th>Type</th><th class="l">Details</th><th>Result</th><th></th></tr></thead><tbody id="hb"></tbody></table></div>
 <p id="hempty" class="leg">No history yet. Score a transaction or run a batch and it will appear here.</p></div></section>
 <div class="toast" id="toast"></div>
@@ -558,8 +560,8 @@ function renderHist(){
   $('hs').innerHTML='<div class="stat"><b>'+h.length+'</b><span>saved checks</span></div><div class="stat"><b>'+f0(scored)+'</b><span>transactions scored</span></div><div class="stat"><b>'+f0(flagged)+'</b><span>flagged as likely fraud</span></div><div class="stat"><b>'+(scored?(flagged/scored*100).toFixed(1):'0.0')+'%</b><span>flag rate</span></div>';
   $('hb').innerHTML=list.map(x=>{
     const when=new Date(x.t).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});let det,res;
-    if(x.type==='single'){const[l,c]=level(x.p);det='Amount '+x.in.Amount+' · Hour '+x.in.Hour+' · V3 '+x.in.V3+' · V4 '+x.in.V4+' · V11 '+x.in.V11+' · V14 '+x.in.V14+' · V20 '+x.in.V20;res=(x.p*100).toFixed(1)+'% <span class="tag '+c+'">'+l+'</span>'}
-    else{det=f0(x.rows)+' rows scored';res=x.flagged+' flagged ('+(x.flagged/x.rows*100).toFixed(1)+'%)'}
+    if(x.type==='single'){const[l,c]=level(x.p);det='Amount '+x.in.Amount+' · Hour '+x.in.Hour+' · V3 '+x.in.V3+' · V4 '+x.in.V4+' · V11 '+x.in.V11+' · V14 '+x.in.V14+' · V20 '+x.in.V20;res=(x.p*100).toFixed(1)+'% <span class="tag '+c+'">'+l+'</span>'+(x.src==='api'?' <span class="chip">model</span>':'')}
+    else{det=f0(x.rows)+' rows scored';res=x.flagged+' flagged ('+(x.flagged/x.rows*100).toFixed(1)+'%)'+(x.src==='api'?' <span class="chip">model</span>':'')}
     return '<tr><td>'+when+'</td><td>'+(x.type==='single'?'Single':'Batch')+'</td><td class="w">'+det+'</td><td>'+res+'</td><td>'+(x.type==='single'?'<button class="btn alt sm" data-r="'+esc(x.id)+'">Reload</button> ':'')+'<button class="btn alt sm" data-d="'+esc(x.id)+'">Delete</button></td></tr>';
   }).join('');
   $('hempty').style.display=list.length?'none':'block';
@@ -571,10 +573,51 @@ $('hfil').onchange=e=>{hf=e.target.value;renderHist()};
 let cf=0;$('hclr').onclick=()=>{if(!cf){cf=1;$('hclr').textContent='Click again to confirm';setTimeout(()=>{cf=0;$('hclr').textContent='Clear all'},3000)}else{saveHist([]);cf=0;$('hclr').textContent='Clear all';renderHist()}};
 
 /* record checks */
+/* optional: score with the real model through the FastAPI service */
+const apiBase=()=>(sget('fd_api')||'').replace(/\/+$/,'');
+async function api(path,body){
+  const r=await fetch(apiBase()+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
+  if(!r.ok)throw new Error('API '+r.status+': '+(await r.text()).slice(0,160));
+  return r.json();
+}
+const feat=r=>{const f={...r};if(f.Time===undefined)f.Time=(f.Hour||0)*3600;delete f.Hour;return f};
+const RK={High:'hi',Medium:'me',Low:'lo'};
+$('apiurl').value=sget('fd_api')||'';
+$('apiurl').onchange=()=>sset('fd_api',$('apiurl').value.trim());
+$('apitest').onclick=async()=>{const u=$('apiurl').value.trim(),s=$('apist');sset('fd_api',u);
+  if(!u){s.textContent='Enter the API address first.';return}
+  s.textContent='Connecting…';
+  try{const j=await api('/health');s.innerHTML='✅ Connected · model '+esc(j.model)+' · threshold '+j.threshold+'. Scoring now uses the trained model.'}
+  catch(e){s.textContent='❌ Could not connect: '+e.message+'. Is uvicorn running, and is the address right?'}};
+$('apioff').onclick=()=>{sdel('fd_api');$('apiurl').value='';$('apist').textContent='Using the demo scorer.'};
+
 const _go=$('go').onclick;
-$('go').onclick=()=>{_go();const r={};['Amount','Hour','V3','V4','V11','V14','V20'].forEach(k=>r[k]=parseFloat($(k).value)||0);const p=score(r);addHist({type:'single',in:r,p,fraud:p>=TH})};
+$('go').onclick=async()=>{
+  const r={};['Amount','Hour','V3','V4','V11','V14','V20'].forEach(k=>r[k]=parseFloat($(k).value)||0);
+  if(apiBase()){
+    const el=$('res');
+    try{
+      const j=await api('/predict',{features:feat(r)}),p=j.fraud_probability,fr=j.is_fraud,col=fr?'var(--bad)':'var(--ok)';
+      el.className='res on';el.style.borderColor=col;
+      el.innerHTML=`<h3 style="color:${col}">${fr?'⚠️ Flagged as likely fraud':'✅ Looks legitimate'}</h3><div>Fraud probability: <b>${(p*100).toFixed(1)}%</b> <span class="tag ${RK[j.risk_level]}">${j.risk_level} risk</span></div><div class="meter"><u style="width:${p*100}%;background:${col}"></u><s style="left:${j.threshold*100}%"></s></div><small style="color:var(--mut)">Trained model via API · threshold ${j.threshold}. This form supplies ${30-j.missing_features_filled.length} of the 30 model inputs; the other ${j.missing_features_filled.length} were set to 0, so treat this as an approximation.</small>`;
+      addHist({type:'single',in:r,p,fraud:fr,src:'api'});
+    }catch(e){el.className='res on';el.style.borderColor='var(--bad)';el.innerHTML='<h3 style="color:var(--bad)">Could not reach the model API</h3><div class="leg">'+esc(e.message)+'</div>'}
+    return;
+  }
+  _go();const p=score(r);addHist({type:'single',in:r,p,fraud:p>=TH});
+};
 const _rb=runBatch;
-runBatch=function(){_rb();const rows=parseCSV($('csv').value);if(!rows.length)return;let fl=0;rows.forEach(r=>{r.Hour=Math.floor((r.Time||0)/3600)%24;if(score(r)>=TH)fl++});addHist({type:'batch',rows:rows.length,flagged:fl})};
+runBatch=async function(){
+  const rows=parseCSV($('csv').value);
+  if(apiBase()&&rows.length){
+    try{
+      const j=await api('/predict/batch',{rows:rows.map(feat)});
+      $('bout').innerHTML=`<div class="grid" style="margin:16px 0"><div class="stat"><b>${j.count}</b><span>rows scored (trained model)</span></div><div class="stat"><b style="color:var(--bad)">${j.flagged}</b><span>flagged</span></div><div class="stat"><b>${(j.flagged/j.count*100).toFixed(1)}%</b><span>flag rate</span></div></div><div class="tw"><table><tr><th>#</th><th>Amount</th><th>Fraud prob.</th><th>Risk</th></tr>`+j.predictions.slice(0,100).map((o,i)=>`<tr><td>${i+1}</td><td>${rows[i].Amount||0}</td><td>${(o.fraud_probability*100).toFixed(1)}%</td><td><span class="tag ${RK[o.risk_level]}">${o.risk_level}</span></td></tr>`).join('')+`</table></div>${j.count>100?'<p class="note">Showing first 100 rows.</p>':''}`;
+      addHist({type:'batch',rows:j.count,flagged:j.flagged,src:'api'});
+    }catch(e){$('bout').innerHTML='<p class="note">Could not reach the model API: '+esc(e.message)+'</p>'}
+    return;
+  }
+  _rb();if(!rows.length)return;let fl=0;rows.forEach(r=>{r.Hour=Math.floor((r.Time||0)/3600)%24;if(score(r)>=TH)fl++});addHist({type:'batch',rows:rows.length,flagged:fl})};
 $('run').onclick=runBatch;
 
 me=sget('fd_session');if(me&&!users()[me])me=null;
