@@ -98,7 +98,7 @@ venv\Scripts\activate          # On Windows
 # source venv/bin/activate     # On Linux / macOS
 
 # Install dependencies
-pip install -r requirements.txt -r requirements-api.txt
+pip install -r requirements.txt
 ```
 
 ---
@@ -154,8 +154,7 @@ Credit-Card-Fraud-Detection-Using-ML/
 ├── Dockerfile                # Production multi-stage Docker container
 ├── docker-compose.yml        # Docker composition file
 ├── Procfile                  # Cloud deployment configuration (Render / Railway)
-├── requirements.txt          # Core ML dependencies
-├── requirements-api.txt      # API & web service dependencies
+├── requirements.txt          # Unified project dependencies (ML, API, Dashboard)
 │
 ├── src/                      # Modular Python source package
 │   ├── config.py             # Global constants, paths, and hyperparameters

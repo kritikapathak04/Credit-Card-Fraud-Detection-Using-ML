@@ -2,7 +2,7 @@
 
 Run from the project root (where models/best_model.joblib lives):
 
-    pip install -r requirements-api.txt
+    pip install -r requirements.txt
     uvicorn api:app --reload --port 8000
 
 Interactive docs: http://localhost:8000/docs
