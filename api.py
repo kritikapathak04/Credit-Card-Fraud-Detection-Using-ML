@@ -24,10 +24,12 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 BASE_DIR = Path(__file__).resolve().parent
 INDEX_HTML = BASE_DIR / "index.html"
+RESULTS_DIR = BASE_DIR / "results"
 MODEL_PATH = Path(os.getenv("MODEL_PATH", "models/best_model.joblib"))
 ALLOW_ORIGINS = [o.strip() for o in os.getenv("ALLOW_ORIGINS", "*").split(",") if o.strip()]
 MAX_BATCH = 10_000
@@ -63,6 +65,9 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Credit Card Fraud Detection API", version="1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=ALLOW_ORIGINS, allow_methods=["*"], allow_headers=["*"])
+
+if RESULTS_DIR.exists():
+    app.mount("/results", StaticFiles(directory=str(RESULTS_DIR)), name="results")
 
 
 # ---------- scoring ----------
