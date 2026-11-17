@@ -56,7 +56,7 @@
 
     header {
       padding: 26px 20px 6px;
-      max-width: 1040px;
+      max-width: 1600px; width: 100%;
       margin: auto
     }
 
@@ -84,7 +84,7 @@
     nav {
       display: flex;
       gap: 6px;
-      max-width: 1040px;
+      max-width: 1600px; width: 100%;
       margin: 14px auto 0;
       padding: 0 20px;
       overflow-x: auto
@@ -108,9 +108,9 @@
     }
 
     main {
-      max-width: 1040px;
+      max-width: 1600px; width: 100%;
       margin: auto;
-      padding: 18px 20px 40px
+      padding: 24px 32px 48px
     }
 
     section {
@@ -142,7 +142,7 @@
     .grid {
       display: grid;
       gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr))
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))
     }
 
     .g2 {
@@ -600,13 +600,13 @@
     }
 
     .topin {
-      max-width: 1040px;
+      max-width: 1600px; width: 100%;
       margin: auto;
-      padding: 10px 20px;
+      padding: 12px 32px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      flex-wrap: wrap
+      gap: 18px;
+      flex-wrap: nowrap
     }
 
     .brand {
@@ -634,8 +634,11 @@
       flex: 1;
       max-width: none;
       margin: 0;
-      padding: 0;
-      gap: 2px
+      padding: 0 10px;
+      gap: 6px;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
     }
 
     nav button {
@@ -874,9 +877,9 @@
     }
 
     footer {
-      max-width: 1040px;
+      max-width: 1600px; width: 100%;
       margin: auto;
-      padding: 22px 20px 48px;
+      padding: 24px 32px 48px;
       color: var(--mut);
       font-size: 13px;
       border-top: 1px solid var(--bd)
