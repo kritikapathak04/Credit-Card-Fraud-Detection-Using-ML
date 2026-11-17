@@ -1,0 +1,67 @@
+{
+  "best_model": "Random Forest",
+  "threshold": 0.08,
+  "data_source": "Synthetic demo dataset (C:\\Users\\shubh\\Downloads\\Credit-Card-Fraud-Detection-Using-ML\\data\\sample_creditcard.csv)",
+  "n_train": 16000,
+  "n_val": 4000,
+  "n_test": 5000,
+  "test_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pr_auc": 1.0,
+    "roc_auc": 1.0,
+    "mcc": 1.0,
+    "tp": 10,
+    "fp": 0,
+    "fn": 0,
+    "tn": 4990,
+    "threshold": 0.08
+  },
+  "comparison": [
+    {
+      "model": "Random Forest",
+      "val_pr_auc": 1.0,
+      "test_precision": 1.0,
+      "test_recall": 1.0,
+      "test_f1": 1.0,
+      "test_pr_auc": 1.0,
+      "test_roc_auc": 1.0,
+      "test_mcc": 1.0,
+      "train_seconds": 0.32
+    },
+    {
+      "model": "Gradient Boosting",
+      "val_pr_auc": 1.0,
+      "test_precision": 0.9091,
+      "test_recall": 1.0,
+      "test_f1": 0.9524,
+      "test_pr_auc": 1.0,
+      "test_roc_auc": 1.0,
+      "test_mcc": 0.9534,
+      "train_seconds": 0.17
+    },
+    {
+      "model": "Logistic Regression",
+      "val_pr_auc": 1.0,
+      "test_precision": 1.0,
+      "test_recall": 1.0,
+      "test_f1": 1.0,
+      "test_pr_auc": 1.0,
+      "test_roc_auc": 1.0,
+      "test_mcc": 1.0,
+      "train_seconds": 0.09
+    },
+    {
+      "model": "Isolation Forest",
+      "val_pr_auc": 0.8863,
+      "test_precision": 0.5385,
+      "test_recall": 0.7,
+      "test_f1": 0.6087,
+      "test_pr_auc": 0.5341,
+      "test_roc_auc": 0.9981,
+      "test_mcc": 0.6131,
+      "train_seconds": 0.39
+    }
+  ]
+}

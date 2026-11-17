@@ -1,0 +1,5 @@
+model,val_pr_auc,test_precision,test_recall,test_f1,test_pr_auc,test_roc_auc,test_mcc,train_seconds
+Random Forest,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.32
+Gradient Boosting,1.0,0.9091,1.0,0.9524,1.0,1.0,0.9534,0.17
+Logistic Regression,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.09
+Isolation Forest,0.8863,0.5385,0.7,0.6087,0.5341,0.9981,0.6131,0.39

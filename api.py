@@ -23,8 +23,11 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
+BASE_DIR = Path(__file__).resolve().parent
+INDEX_HTML = BASE_DIR / "index.html"
 MODEL_PATH = Path(os.getenv("MODEL_PATH", "models/best_model.joblib"))
 ALLOW_ORIGINS = [o.strip() for o in os.getenv("ALLOW_ORIGINS", "*").split(",") if o.strip()]
 MAX_BATCH = 10_000
@@ -120,6 +123,13 @@ class Prediction(BaseModel):
 
 
 # ---------- routes ----------
+@app.get("/", response_class=HTMLResponse)
+def root():
+    if INDEX_HTML.exists():
+        return FileResponse(INDEX_HTML)
+    return HTMLResponse("<h2>Credit Card Fraud Detection API is running. Visit <a href='/docs'>/docs</a>.</h2>")
+
+
 @app.get("/health")
 def health():
     pipe = STATE["pipe"]

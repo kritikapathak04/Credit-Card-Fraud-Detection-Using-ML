@@ -574,7 +574,12 @@ let cf=0;$('hclr').onclick=()=>{if(!cf){cf=1;$('hclr').textContent='Click again 
 
 /* record checks */
 /* optional: score with the real model through the FastAPI service */
-const apiBase=()=>(sget('fd_api')||'').replace(/\/+$/,'');
+const defaultApiUrl = (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) ? window.location.origin : '';
+const apiBase = () => {
+  const saved = sget('fd_api');
+  if (saved === 'OFF') return '';
+  return (saved || defaultApiUrl).replace(/\/+$/, '');
+};
 async function api(path,body){
   const r=await fetch(apiBase()+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
   if(!r.ok)throw new Error('API '+r.status+': '+(await r.text()).slice(0,160));
@@ -582,14 +587,21 @@ async function api(path,body){
 }
 const feat=r=>{const f={...r};if(f.Time===undefined)f.Time=(f.Hour||0)*3600;delete f.Hour;return f};
 const RK={High:'hi',Medium:'me',Low:'lo'};
-$('apiurl').value=sget('fd_api')||'';
+$('apiurl').value=sget('fd_api') === 'OFF' ? '' : (sget('fd_api') || defaultApiUrl);
 $('apiurl').onchange=()=>sset('fd_api',$('apiurl').value.trim());
 $('apitest').onclick=async()=>{const u=$('apiurl').value.trim(),s=$('apist');sset('fd_api',u);
   if(!u){s.textContent='Enter the API address first.';return}
   s.textContent='Connecting…';
   try{const j=await api('/health');s.innerHTML='✅ Connected · model '+esc(j.model)+' · threshold '+j.threshold+'. Scoring now uses the trained model.'}
   catch(e){s.textContent='❌ Could not connect: '+e.message+'. Is uvicorn running, and is the address right?'}};
-$('apioff').onclick=()=>{sdel('fd_api');$('apiurl').value='';$('apist').textContent='Using the demo scorer.'};
+$('apioff').onclick=()=>{sset('fd_api','OFF');$('apiurl').value='';$('apist').textContent='Using the demo scorer.'};
+
+// Auto-check API connection if served over HTTP
+if (apiBase()) {
+  api('/health').then(j => {
+    $('apist').innerHTML = '✅ Connected · model ' + esc(j.model) + ' · threshold ' + j.threshold + '. Live model active.';
+  }).catch(() => {});
+}
 
 const _go=$('go').onclick;
 $('go').onclick=async()=>{
